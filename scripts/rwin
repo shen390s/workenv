@@ -1,0 +1,13 @@
+#!/bin/sh
+_rdesktop=`which rdesktop`
+
+if [ "X$_rdesktop" = "X" ]; then
+   echo Please install rdesktop package
+   return 1
+fi
+
+_host=`hostip $1`
+_geom="-g 1024x768"
+_color="-a 24"
+_user="-u Administrator"
+exec $_rdesktop $_user $_color $_geom $_host

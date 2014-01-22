@@ -1,0 +1,2 @@
+#!/bin/sh
+rsync -va /home/rshen/works/ rsync://rshen@9.123.144.149/works/

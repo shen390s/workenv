@@ -1,0 +1,24 @@
+#!/bin/eshell
+(require 'cl)
+(defvar *orgmode-root* "~/.emacs.d/org/")
+
+(loop for d in '("lisp" "contrib/lisp")
+     do (add-to-list 'load-path (concat *orgmode-root* d)))
+
+(defun org2pdf (file)
+  (message "Processing %s\n" file)
+  (progn 
+    (find-file file)
+    (org-mode)
+    (org-latex-export-to-pdf)
+    (kill-buffer)))
+
+(defun process-files (files)
+  (loop for file in files
+       do (org2pdf file)))
+
+(defun main (argv)
+  (unless (= (length argv) 0)
+    (process-files argv)))
+      
+(main command-line-args-left)

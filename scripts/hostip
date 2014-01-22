@@ -1,0 +1,20 @@
+#!/bin/sh 
+. /home/rshen/store/utils/scripts/miscutils
+hwconfig()
+{
+cat <<EOF
+win7xp64=00:16:3e:3e:8b:7d
+diy01=00:e0:81:78:7b:a8
+winxp64=00:16:3e:3e:c6:f1
+rh52mini4-1=00:16:3e:2f:46:4c
+xenhost=00:14:22:4A:70:63
+EOF
+}
+
+get_hw()
+{
+    _host=$1
+    hwconfig |grep "^$_host=" |awk -F= '{print $2}'
+}
+
+resolve_ip `get_hw $1` 172.20.38.0

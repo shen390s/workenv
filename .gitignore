@@ -1,6 +1,4 @@
-.*hist*
 *~
-.cvspass
 work*
 Download*
 download*
@@ -15,11 +13,12 @@ Ubuntu*One
 fontconfig
 Calibre*
 Dropbox
-.ICEauthority
-.VirtualBox/
-.Xauthority*
 Music/
 GNUstep/
-.xsession*
-.slime
 bsdnas
+gsa
+store
+Public/
+quicklisp/*
+Documents
+.[a-zA-Z0-9]*

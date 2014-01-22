@@ -1,0 +1,132 @@
+#! /bin/sh
+
+pdfgen=pdflatex
+diffgen=latexdiff-vc
+pdfview=evince
+md5cmd="md5 -q"
+idxgen=makeindex
+view="no"
+LANG=C
+LC_TYPE=C
+LC_ALL=C
+export LC_ALL LANG LC_TYPE
+
+check_vc()
+{
+    if [ -d .svn ]; then
+	echo --svn -r --force
+    elif [ -d CVS ]; then
+	echo --cvs -r --force
+    else
+	echo ""
+    fi
+}
+
+getdst_base()
+{
+    if echo "$1" |grep '\.latex' 2>&1 >/dev/null; then
+	echo "$1" | sed 's/\.latex$//'
+    else
+	echo "$1"|sed 's/\.tex//'
+    fi
+}
+
+md5_gen()
+{
+    echo `$md5cmd $1`
+}
+
+run_pdf_gen()
+{
+    basef=`getdst_base $1`
+    if [ -f $basef.aux ]; then
+	old_aux_md5=`md5_gen $basef.aux`
+    else
+	old_aux_md5=""
+    fi
+
+    if [ -f $basef.idx ]; then
+	old_idx_md5=`md5_gen $basef.idx`
+    else
+	old_idx_md5=""
+    fi
+
+    $pdfgen $1
+
+    if [ -f $basef.aux ]; then
+	new_aux_md5=`md5_gen $basef.aux`
+    else
+	new_aux_md5=""
+    fi
+    
+    if [ -f $basef.idx ]; then
+	new_idx_md5=`md5_gen $basef.idx`
+    else
+	new_idx_md5=""
+    fi
+
+    if [ "X$old_aux_md5" = "X$new_aux_md5" -a "X$old_idx_md5" = "X$new_idx_md5" ]; then
+	:
+    else
+	# re-run pdflatex to generate pages
+	# with cross reference
+	if [ "X$old_idx_md5" = "X$new_idx_md5" ]; then
+	    :
+	else
+	    $idxgen $basef
+	fi
+
+	$pdfgen $1
+    fi
+}
+fix_tex()
+{
+    mv $1 $1.old
+    cat $1.old |sed 's/SUBSCRIPTNB/\\_/g' >$1
+    rm $1.old
+}
+do_gen()
+{
+    cd $1
+    srcf=$2
+
+    vc_option=`check_vc`
+    if [ "X$vc_option" = "X" ]; then
+	$pdfgen $srcf
+    else
+	dstbase=`getdst_base $srcf`
+	if $diffgen $vc_option $srcf 2>/dev/null; then
+	    fix_tex $dstbase-diff.tex
+	    run_pdf_gen $dstbase-diff.tex
+	    mv $dstbase-diff.pdf $dstbase.pdf
+	else
+	    echo "Warning: I have not generated highlighted changes for you"
+	    run_pdf_gen $srcf
+	fi
+    fi
+
+    if [ "X$view" = "Xyes" ]; then
+	$pdfview $dstbase.pdf
+    fi
+}
+
+gen_pdf()
+{
+    dir=`dirname $1`
+    fname=`basename $1`
+    (do_gen $dir $fname)
+}
+usage()
+{
+cat <<EOF
+usage: $0 <tex file name>
+EOF
+}
+
+for f in $*; do
+    if [ "X$f" = "X-v" ]; then
+	view=yes
+    else
+	gen_pdf "$f"
+    fi
+done

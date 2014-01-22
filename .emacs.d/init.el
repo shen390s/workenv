@@ -9,4 +9,4 @@
 
 ;; load initialize packages
 (dolist (pkg *load-init*)
-  (load-file pkg))
+  (load-file (concat *custom-dir* "/" pkg)))

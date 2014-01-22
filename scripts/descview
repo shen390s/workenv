@@ -1,0 +1,17 @@
+#! /bin/sh
+portname="$1"
+
+portdir=`whereis $portname |awk  '{ print $NF}' |xargs echo`
+if [ "X$portdir" = "X" ]; then
+    echo "$portname can not be found"
+    exit 1
+fi
+
+if [ ! -f $portdir/pkg-descr ]; then
+    echo "No decription for PORT $portname"
+    exit 2
+fi
+echo "Description of PORT: $portname"
+echo "================================================================================"
+cat $portdir/pkg-descr
+exit 0

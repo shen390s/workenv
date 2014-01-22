@@ -1,0 +1,12 @@
+#! /bin/sh
+check_vc()
+{
+    if [ -d .svn ]; then
+	echo "svn status "
+    elif [ -d CVS ]; then
+	echo "cvs update "
+    fi
+}
+
+vc=`check_vc`
+eval $vc 2>&1 |grep '^? ' |xargs -n 10 rm -Rf 

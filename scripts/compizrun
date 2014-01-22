@@ -1,0 +1,26 @@
+#! /bin/sh
+check_pkg()
+{
+    if pkg_info $1\* 2>&1 >/dev/null; then
+	return 0
+    else
+	return 1
+    fi
+}
+
+if check_pkg compiz; then
+    :
+else
+    echo "You should install compiz packages"
+    exit 1
+fi
+
+if check_pkg emerald; then
+    :
+else
+    echo "You should install emerald package"
+fi
+
+export LIBGL_ALWAYS_INDIRECT=1
+compiz --replace --sm-disable --ignore-desktop-hints ccp &
+emerald --replace &

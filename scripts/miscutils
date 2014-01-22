@@ -1,0 +1,78 @@
+. ~/scripts/strlib.sh
+run_sed()
+{
+    sed -e $*
+}
+quote_char()
+{
+    _sexp="s/\\$1/\\\\\\$1/g"
+    run_sed $_sexp
+}
+
+text2rexp()
+{
+    quote_char '.' |quote_char '+' quote_char '-' 
+}
+
+ipwithlen()
+{
+    _cnt=1
+    _ip="$1"
+    _iplen=32
+    while [ $_cnt -lt 4 ]; do
+	case $_ip in
+	    *.0 )
+		_ip=`echo $_ip|sed 's/\.0$//g'`
+		_iplen=`expr $_iplen - 8`
+		;;
+	    *)
+		break
+		;;
+	esac
+	_cnt=`expr $_cnt + 1`
+    done
+    if [ "X$_iplen" = "X32" ]; then
+	echo $_ip
+    else
+	echo "$1/$_iplen"
+    fi
+}
+discover_host()
+{
+    nmap -sP `ipwithlen $1` 2>&1 >/dev/null
+}
+
+resolve_ip()
+{
+    _host=$1
+    _net=$2
+    if [ "X$_net" = "X" ];then
+	_net="0.0.0.0"
+    fi
+    _bcast=`echo $_net |sed -e 's/\.0/\.255/g' -e 's/^0\./255\./g'` 
+    if arp -a |grep -i $_host 2>&1 >/dev/null; then
+	:
+    else
+	discover_host $_net
+	if arp -a |grep -i $_host 2>&1 >/dev/null; then
+	    :
+	else
+	    return
+	fi
+    fi
+    
+    _ipexp=`echo $_bcast | text2rexp |sed 's/255/[0-9]+/g'`
+    matched "`arp -a | grep -i $_host |sed -n '1,1p' 2>/dev/null`" "$_ipexp" 
+}
+
+replace_string()
+{
+    _file="$1"
+    _srcs="$2"
+    _dsts="$3"
+    _sedsp=`echo $_srcs|quote_char "/" |quote_char "."`
+    _seddp=`echo $_dsts|quote_char "/" |quote_char "."`
+    _sedcmd="sed 's/$_sedsp/$_seddp/g'"
+    cat $_file |eval "$_sedcmd" >$_file.tmp
+    mv $_file.tmp $_file
+}

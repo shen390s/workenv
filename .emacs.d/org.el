@@ -27,7 +27,8 @@
 	   ("Language name" . "File Extension"))))
 
  '(org-confirm-babel-evaluate nil)
+ '(org-eukleides-path "/usr/bin/eukleides")
  `(org-ditaa-jar-path ,(concat *org-root* "contrib/scripts/ditaa.jar"))
  '(org-enforce-todo-dependencies t)
- `(org-plantuml-jar-path ,(concat *misc-dir* "plantuml.jar")))
+ `(org-plantuml-jar-path ,(concat *misc-dir* "/plantuml.jar")))
 

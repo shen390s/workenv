@@ -1,0 +1,27 @@
+#!/bin/sh
+set -x
+HWADDR=00:21:cc:b3:74:82
+find_ip()
+{
+    ip=""
+    for i in `seq 2 254`; do
+	ping -c 1 -W 1 9.123.144.$i 2>&1 >/dev/null
+	ip=`arp -a -n |grep -v incomplete |awk "\\$4 ~ /$1/ {print \\$2}"`
+	ip=`echo $ip |sed -e 's/(//g' -e 's/)//g' |xargs echo`
+	if [ "X$ip" = "X" ]; then
+	    :
+	else
+	    break
+	fi
+    done
+    echo $ip
+}
+
+USER=rshen
+PASS="-"
+SCREEN=1280x1000
+SOUND=local
+COLOR=24
+DISK=h=/home/rshen
+HOST=`find_ip $HWADDR`
+rdesktop -u $USER -p $PASS -g $SCREEN -x l -r sound:$SOUND -r disk:$DISK -z -a $COLOR  $HOST & 

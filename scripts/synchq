@@ -1,0 +1,2 @@
+#!/bin/sh
+scp -r /home/rshen/scripts rshen@intel4:/home/rshen/

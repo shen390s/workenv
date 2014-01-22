@@ -1,0 +1,5 @@
+#!/bin/sh
+prog=$1
+shift
+exec_file="(progn (find-file \"$prog\") (eval-region (progn (goto-char (point-min)) (next-line)) (point-max)))  "
+exec emacs -Q --batch --eval "$exec_file" -f main -- "$@"

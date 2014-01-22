@@ -1,0 +1,87 @@
+#!/bin/sh
+#Get IP address using HW address
+PATH=/bin:/usr/bin:/usr/sbin
+export PATH
+PING=ping
+IPRANGE=192.168.1.2-254
+HERE_FLIST=
+
+here()
+{
+    _hf=`mktemp /tmp/HEREXXXXX`
+    HERE_FLIST="$HERE_FLIST $_hf"
+    echo "$*" >$_hf
+    echo $_hf
+}
+
+parse_range()
+{
+    echo "$1" | awk -F- 'NF==2 { printf("%s %s\n", $1,$2) } NF==1 { printf("%s %s\n",$1,$1) }'
+}
+
+parse_ip_range()
+{
+    _ipr=""
+    for _d in `echo "$1" |sed 's/\./ /g'`; do
+    	_ipr="$_ipr `parse_range $_d`"
+    done
+
+    echo $_ipr
+}
+
+iterate_ip_range()
+{
+    _rg="$1"
+    _fc="$2"
+
+    _cmd=`echo $_rg |awk '{printf("a1=%s;a2=%s;b1=%s;b2=%s;c1=%s;c2=%s;d1=%s;d2=%s\n",$1,$2,$3,$4,$5,$6,$7,$8)}'`
+
+    eval $_cmd
+
+    _i=$a1
+    for _i in `seq $a1 $a2`; do
+	for _j in `seq $b1 $b2`; do
+	    for _k in `seq $c1 $c2`; do
+		for _l in `seq $d1 $d2`; do
+	            eval "$_fc $_i.$_j.$_k.$_l"
+		done
+	    done
+	done
+    done
+}
+
+hwlist()
+{
+    cat  hwlist |sed -e 's/#.*$//g' |sed -e '/^$/d'
+}
+
+hw2name()
+{
+    _awkf=`here '$1 == "'$1'" { print $2}'`
+    _hhname=`hwlist |awk -f $_awkf`
+    if [ "X$_hhname" = "X" ]; then
+	echo 
+    else
+	echo $_hhname
+    fi
+}
+ip_resolv()
+{
+    if $PING -W 1 -c 1 "$1" 2>&1 >/dev/null; then
+        _xcmd=`arp -an | grep -v incomplete |grep "($1)" |awk '{ printf("_xhname=\"%s\";_xip=\"%s\";_xhw=\"%s\"\n",$1,$2,$4) }'`
+	eval $_xcmd
+
+	_xhname1=`hw2name $_xhw`
+	if [ "X$_xhname1" = "X" ];then
+	    :
+	else
+	    _xhname=$_xhname1
+	fi
+
+	_xip=`echo $_xip|sed -e 's/(//g' -e 's/)//g'`
+
+	echo "$_xip $_xhname # HWADDR: $_xhw"
+    fi
+}
+
+iterate_ip_range "`parse_ip_range $1`" ip_resolv

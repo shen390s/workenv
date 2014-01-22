@@ -1,0 +1,38 @@
+#! /bin/sh
+ip=$1
+
+fetch_ip()
+{
+    fetch -o - "http://samspade.org/whois/$1" 2>/dev/null
+}
+
+wget_ip()
+{
+    wget -O - "http://samspade.org/whois/$1" 2>/dev/null
+}
+
+whereis_()
+{
+    prog=$1
+    
+    for d in `echo $PATH|sed 's/:/ /g'`; do
+	if [ -x $d/$prog  ]; then
+	    echo $d/$prog
+	    return 0
+	fi
+    done
+    echo
+    return 1
+}
+
+if whereis_ fetch 2>&1 >/dev/null; then
+    fetch_ip $ip
+elif whereis_ wget 2>&1 >/dev/null; then
+    wget_ip $ip
+else
+    cat <<EOF
+Can not find fetch or wget. please install one of them first.
+EOF
+    exit 1
+fi
+exit 0
