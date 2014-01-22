@@ -7,6 +7,8 @@ download*
 corp
 tmp
 .emacs.d/auto-save-list
+.emacs.d/org
+.emacs.d/elpa
 VirtualBox*
 Videos*
 Ubuntu*One
