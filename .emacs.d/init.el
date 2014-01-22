@@ -1,6 +1,10 @@
 ;;; Add initialization here
 (defvar *custom-dir* "/home/rshen/.emacs.d")
+
 (add-to-list 'load-path *custom-dir*)
+(setq custom-file (concat *custom-dir* "/custom.el"))
+(if (file-exists-p custom-file)
+    (load custom-file))
 
 ;; define the package which are needed
 ;; to be loaded
