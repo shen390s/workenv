@@ -1,5 +1,9 @@
 [user]
-	name = Rongsong Shen
 	email = rongsong.shen@gmail.com
+	name = Rongsong Shen
 [push]
-	default = matching
+	default = simple
+[core]
+	editor = vi
+[color]
+	ui = true
