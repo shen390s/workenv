@@ -1,12 +1,29 @@
+# backup file of emacs
 *~
 work*
+
+# Downloaded files from internet
 Download*
 download*
 corp
 tmp
+
+# hidden files
+.[a-zA-Z0-9]*
+
+# do not ignore emacs setting
+!.emacs.d
+
+# ignore autosave of emacs
 .emacs.d/auto-save-list
+
+# ignore org downloaded from internet
 .emacs.d/org
+
+# ignore emacs packages
 .emacs.d/elpa
+
+# virtualbox vm do not managed by GIT
 VirtualBox*
 Videos*
 Ubuntu*One
@@ -19,6 +36,4 @@ bsdnas
 gsa
 store
 Public/
-quicklisp/*
 Documents
-.[a-zA-Z0-9]*
