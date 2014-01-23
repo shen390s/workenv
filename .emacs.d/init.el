@@ -3,6 +3,7 @@
 
 (add-to-list 'load-path *custom-dir*)
 (setq custom-file (concat *custom-dir* "/custom.el"))
+
 (if (file-exists-p custom-file)
     (load custom-file))
 
@@ -14,3 +15,4 @@
 ;; load initialize packages
 (dolist (pkg *load-init*)
   (load-file (concat *custom-dir* "/" pkg)))
+
