@@ -34,6 +34,8 @@
 
 (c-add-style "PERSONAL" my-c-style)
 
+(require 'srecode)
+
 ;; Customizations for all modes in CC Mode.
 (defun my-c-mode-common-hook ()
   ;; set my personal style for the current buffer
@@ -45,6 +47,7 @@
   ;; we like auto-newline, but not hungry-delete
   (c-toggle-auto-newline 1)
   (gtags-mode 1)
+  (srecode-minor-mode 1)
   (hs-minor-mode 1))
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
