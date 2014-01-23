@@ -9,7 +9,7 @@
 
 ;; define the package which are needed
 ;; to be loaded
-(defvar *load-init* '("org.el" "slime.el" "my-c.el"))
+(defvar *load-init* '("org.el" "slime.el" "my-c.el" "vc.el"))
 (defvar *misc-dir* (concat *custom-dir* "/misc"))
 
 ;; load initialize packages
