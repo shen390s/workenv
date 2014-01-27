@@ -11,7 +11,8 @@
 ;; to be loaded
 (defvar *load-init* '("el-get-init" "my-c-init"
 		      "vc-init" "slime-init"
-		      ))
+		      "org-init"))
+
 (defvar *misc-dir* (concat *custom-dir* "/misc"))
 
 ;; load initialize packages
