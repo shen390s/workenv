@@ -27,7 +27,9 @@
 
 (setq my-packages
       (append 
-       '(auctex org-mode main-line) 
+       '(auctex org-mode 
+	 main-line yasnippet
+	 yasnippet-config) 
        (mapcar 'el-get-as-symbol
 	       (mapcar 'el-get-source-name el-get-sources))))
 
