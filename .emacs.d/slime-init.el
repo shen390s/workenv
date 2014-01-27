@@ -1,3 +1,9 @@
+;; (defvar slime-path 
+;;   (concat *custom-dir* "/el-get/slime"))
+
+;; (add-to-list 'load-path slime-path)
+;; (require 'slime-tests)
+
 (defun my-slime-add-contribs (&rest contribs)
   (when contribs
     (let ((p (expand-file-name "contrib" slime-path)))
