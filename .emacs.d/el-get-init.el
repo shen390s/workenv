@@ -12,6 +12,8 @@
       (concat *custom-dir*
 	      "/el-get-init-files"))
 
+(setq el-get-verbose t)
+
 (unless (require 'el-get nil 'noerror)
   (with-current-buffer
       (url-retrieve-synchronously *el-get-url*)
@@ -19,4 +21,14 @@
     (eval-print-last-sexp)))
 
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-(el-get 'sync)
+
+(setq el-get-sources
+      '((:name el-get :branch "master")))
+
+(setq my-packages
+      (append 
+       '(auctex org-mode main-line) 
+       (mapcar 'el-get-as-symbol
+	       (mapcar 'el-get-source-name el-get-sources))))
+
+(el-get 'sync my-packages)
