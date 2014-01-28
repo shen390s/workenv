@@ -1,6 +1,6 @@
 #!/bin/eshell
 (require 'cl)
-(defvar *orgmode-root* "~/.emacs.d/org/")
+(defvar *orgmode-root* "~/.emacs.d/el-get/org-mode/")
 
 (loop for d in '("lisp" "contrib/lisp")
      do (add-to-list 'load-path (concat *orgmode-root* d)))

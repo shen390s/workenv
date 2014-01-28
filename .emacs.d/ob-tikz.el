@@ -106,8 +106,7 @@
 				 "\n\\end{tikzpicture}\n"
 				 "\\end{document}\n"))
   (message "%s" (concat tikz-prologues tikz-script-data))
-  (concat tikz-prologues tikz-script-data)
-)
+  (concat tikz-prologues tikz-script-data))
 
 (defun tikz-post-run (fmt in-file out-file)
   (shell-command (concat org-tikz-convert " "
@@ -115,8 +114,7 @@
 				 (file-name-nondirectory in-file) 
 				 "-figure0.pdf")
 			 " "
-			 out-file))
-)
+			 out-file)))
  
 (defun org-babel-execute:tikz (body params)
   "Execute a block of Tikz code.
@@ -153,26 +151,22 @@ Tikz does not support sessions"
 (defun org-babel-variable-assignments:tikz (params)
   "Return list of tikz statements assigning the block's variables"
   (mapcar #'org-babel-tikz-var-to-tikz
-	  (mapcar #'cdr (org-babel-get-header params :var)))
-)
+	  (mapcar #'cdr (org-babel-get-header params :var))))
 
 (defun tikz-get-value-by-name (name vpairs)
   (let ((vp (assoc name vpairs)))
     (if vp
 	(cdr vp)
-      nil))
-)
+      nil)))
 
 (defun org-babel-tikz-var-value (val)
-  val
-  )
+  val)
 
 (defun org-babel-tikz-var-to-tikz (pair)
   "Convert an elisp value into an Tikz variable.
 The elisp value PAIR is converted into Tikz code specifying
 a variable of the same value."
-  nil
-  )
+  nil)
 
 (defun org-babel-tikz-define-type (data)
   "Determine type of DATA.

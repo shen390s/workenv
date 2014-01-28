@@ -80,8 +80,7 @@
 			  "\nendfig;\n"
 			  "end\n"))
   (message "%s" mp-script)
-  (concat mp-prologues mp-script)
-)
+  (concat mp-prologues mp-script))
 
 (defun metapost-post-run (fmt in-file out-file)
   (cond ((or (string= fmt "svg")
@@ -91,9 +90,7 @@
 				  (concat (file-name-nondirectory in-file) 
 					  ".1")
 				  " "
-				  out-file)))
-	)
-)
+				  out-file)))))
  
 (defun org-babel-execute:metapost (body params)
   "Execute a block of Metapost code.
@@ -134,19 +131,16 @@ Metapost does not support sessions"
 (defun org-babel-metapost-var-value (val)
   (setq mp-m-end 0)
   (setq mp-m-start (string-match metapost-type-prefix val))
-  (if mp-m-start (setq mp-m-end (match-end 0))
-    )
+  (if mp-m-start 
+      (setq mp-m-end (match-end 0)))
   (setq mp-var-type "")
   (setq mp-var-value val)
   (if (> mp-m-end 0)
       (progn (setq mp-var-type 
 		   (substring val mp-m-start (- mp-m-end 1)))
 	     (setq mp-var-value
-		   (substring val mp-m-end (length val)))
-	     )
-    )
-  (cons mp-var-type (cons mp-var-value nil))
-  )
+		   (substring val mp-m-end (length val)))))
+  (cons mp-var-type (cons mp-var-value nil)))
 
 (defun org-babel-metapost-var-to-metapost (pair)
   "Convert an elisp value into an Metapost variable.
@@ -165,11 +159,7 @@ a variable of the same value."
 		  )
 	(format "%s %s;\n %s := %s;\n"
 		mp-var-type var var mp-var-value
-		)
-	)
-      )
-    )
-  )
+		)))))
 
 (defun org-babel-metapost-define-type (data)
   "Determine type of DATA.

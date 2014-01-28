@@ -8,6 +8,8 @@
 (defvar el-get-git-install-url
   "https://github.com/shen390s/el-get.git")
   
+(setq el-get-github-default-url-type 'https)
+
 (setq el-get-user-package-directory
       (concat *custom-dir*
 	      "/el-get-init-files"))
@@ -27,9 +29,11 @@
 
 (setq my-packages
       (append 
-       '(auctex org-mode 
-	 main-line yasnippet
-	 yasnippet-config) 
+       '(auctex org-mode main-line yasnippet
+	 yasnippet-config magit magithub 
+	 magit-tramp magit-filenotify
+	 magit-gh-pulls magit-identities
+	 magit-view-file) 
        (mapcar 'el-get-as-symbol
 	       (mapcar 'el-get-source-name el-get-sources))))
 

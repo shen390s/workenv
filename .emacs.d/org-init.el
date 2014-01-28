@@ -1,5 +1,5 @@
 ;;;
-(defvar *org-root* "~/.emacs.d/org/")
+(defvar *org-root* "~/.emacs.d/el-get/org-mode/")
 (dolist (dir '("lisp" "contrib/lisp"))
   (add-to-list 'load-path (concat *org-root* dir)))
 
