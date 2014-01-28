@@ -1,8 +1,0 @@
-(load #p"~/quicklisp/quicklisp.lisp")
-(quicklisp-quickstart:install)
-(ql:quickload "quicklisp-slime-helper")
-(ql:update-all-dists)
-(ql:update-client)
-;;(ql:quickload "slime-20131211-cvs")
-(ql:add-to-init-file)
-(quit)
