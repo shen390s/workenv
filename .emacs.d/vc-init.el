@@ -1,6 +1,7 @@
 ;; Enable VC support
 ;;
 (require 'vc)
+(setq magit-log-edit-confirm-cancellation t)
 
 ;; Enable vc-rtc.el
 ;;
