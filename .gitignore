@@ -16,6 +16,8 @@ tmp
 
 # ignore autosave of emacs
 .emacs.d/auto-save-list
+.emacs.d/eshell
+.emacs.d/tutorial
 
 # ignore org downloaded from internet
 .emacs.d/org

@@ -1,9 +1,7 @@
-;; (defvar slime-path 
-;;   (concat *custom-dir* "/el-get/slime"))
-
-;; (add-to-list 'load-path slime-path)
-;; (require 'slime-tests)
 (setq inferior-lisp-program "sbcl")
+
+(defvar *quicklisp-url* 
+  "http://beta.quicklisp.org/quicklisp.lisp")
 
 (defun my-slime-add-contribs (&rest contribs)
   (when contribs
@@ -20,11 +18,47 @@
           (add-to-list 'slime-setup-contribs c))
         )))) 
 
-(if (file-exists-p "~/quicklisp/asdf.lisp")
-    (progn (load (expand-file-name "~/quicklisp/slime-helper.el"))
-	   (my-slime-add-contribs 'slime-mrepl
-				  'slime-banner
-				  'slime-xref-browser))
-  (message "Please run command `sbcl --load ~/quicklisp/slime-setup.lisp"))
+(defvar *slime-install-commands*
+  '("quicklisp-quickstart:install"
+    "ql:update-client"
+    "ql:add-to-init-file"
+    "ql:quickload \"quicklisp-slime-helper\""))
 
+(defun quicklisp-run-install-script (proc)
+  (process-send-string proc 
+		       (concat "(load #p\"" 
+			       (expand-file-name "~/quicklisp/quicklisp.lisp")
+			       "\")\n"))
+  (dolist (cmd *slime-install-commands*)
+    (process-send-string proc (concat "(" cmd ")\n\n"))))
+
+(defun start-lisp()
+  (let ((buf (get-buffer-create "*lisp*")))
+    (progn (set-buffer buf)
+	   (start-process "lisp"
+			  buf
+			  inferior-lisp-program))))
+
+(defun load-slime ()
+  (progn (load (expand-file-name "~/quicklisp/slime-helper.el"))
+	 (my-slime-add-contribs 'slime-mrepl
+				'slime-banner
+				'slime-xref-browser)))
+
+(defun after-install (process event)
+  (load-slime))
+
+(defun quicklisp-install ()
+  (let ((sbcl (start-lisp))) 
+    (set-process-sentinel sbcl 'after-install)
+    (quicklisp-run-install-script sbcl)
+    (process-send-string sbcl "(quit)\n\n")))
+
+(if (file-exists-p "~/quicklisp/slime-helper.el")
+    (load-slime)
+  (progn (unless (file-exists-p "~/quicklisp")
+	   (mkdir "~/quicklisp"))
+	 (unless (file-exists-p "~/quicklisp/quicklisp.lisp")
+	   (url-copy-file *quicklisp-url* "~/quicklisp/quicklisp.lisp"))
+	 (quicklisp-install)))
 
