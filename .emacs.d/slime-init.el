@@ -2,6 +2,8 @@
 
 (defvar *quicklisp-url* 
   "http://beta.quicklisp.org/quicklisp.lisp")
+(defvar *quicklisp-dir* "~/quicklisp")
+(defvar *quicklisp-file* "quicklisp.lisp")
 
 (defun my-slime-add-contribs (&rest contribs)
   (when contribs
@@ -21,13 +23,14 @@
 (defvar *slime-install-commands*
   '("quicklisp-quickstart:install"
     "ql:update-client"
-    "ql:add-to-init-file"
-    "ql:quickload \"quicklisp-slime-helper\""))
+    "ql:quickload \"quicklisp-slime-helper\""
+    "ql:add-to-init-file"))
 
 (defun quicklisp-run-install-script (proc)
   (process-send-string proc 
 		       (concat "(load #p\"" 
-			       (expand-file-name "~/quicklisp/quicklisp.lisp")
+			       (expand-file-name (concat *quicklisp-dir* "/"
+							 *quicklisp-file*))
 			       "\")\n"))
   (dolist (cmd *slime-install-commands*)
     (process-send-string proc (concat "(" cmd ")\n\n"))))
@@ -40,7 +43,8 @@
 			  inferior-lisp-program))))
 
 (defun load-slime ()
-  (progn (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (progn (load (expand-file-name (concat *quicklisp-dir* 
+					 "/slime-helper.el")))
 	 (my-slime-add-contribs 'slime-mrepl
 				'slime-banner
 				'slime-xref-browser)))
@@ -54,11 +58,14 @@
     (quicklisp-run-install-script sbcl)
     (process-send-string sbcl "(quit)\n\n")))
 
-(if (file-exists-p "~/quicklisp/slime-helper.el")
+(if (file-exists-p (concat *quicklisp-dir* 
+			   "/slime-helper.el"))
     (load-slime)
-  (progn (unless (file-exists-p "~/quicklisp")
-	   (mkdir "~/quicklisp"))
-	 (unless (file-exists-p "~/quicklisp/quicklisp.lisp")
-	   (url-copy-file *quicklisp-url* "~/quicklisp/quicklisp.lisp"))
-	 (quicklisp-install)))
+  (progn (unless (file-exists-p *quicklisp-dir*)
+	   (mkdir *quicklisp-dir*))
+	 (let ((quicklisp (concat *quicklisp-dir* "/"
+				  *quicklisp-file*)))
+	 (unless (file-exists-p quicklisp)
+	   (url-copy-file *quicklisp-url* quicklisp))
+	 (quicklisp-install))))
 
